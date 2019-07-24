@@ -31,9 +31,9 @@ public class PingDriverSystem : JobComponentSystem
     protected override void OnCreateManager()
     {
         m_Barrier = World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>();
-        m_NewDriverGroup = GetEntityQuery(ComponentType.ReadOnly<PingDriverComponentData>(),
+        m_NewDriverGroup = GetEntityQuery(ComponentType.ReadOnly<PingDriverComponent>(),
             ComponentType.Exclude<PingDriverStateComponent>());
-        m_DestroyedDriverGroup = GetEntityQuery(ComponentType.Exclude<PingDriverComponentData>(),
+        m_DestroyedDriverGroup = GetEntityQuery(ComponentType.Exclude<PingDriverComponent>(),
             ComponentType.ReadOnly<PingDriverStateComponent>());
         m_ServerConnectionGroup = GetEntityQuery(ComponentType.ReadWrite<PingServerConnectionComponentData>());
     }
@@ -89,7 +89,7 @@ public class PingDriverSystem : JobComponentSystem
         {
             inputDep.Complete();
             var destroyedDriverEntity = m_DestroyedDriverGroup.ToEntityArray(Allocator.TempJob);
-            var destroyedDriverList = m_DestroyedDriverGroup.ToComponentDataArray<PingDriverComponentData>(Allocator.TempJob);
+            var destroyedDriverList = m_DestroyedDriverGroup.ToComponentDataArray<PingDriverComponent>(Allocator.TempJob);
             for (int i = 0; i < destroyedDriverList.Length; ++i)
             {
                 if (destroyedDriverList[i].isServer != 0)
@@ -116,29 +116,40 @@ public class PingDriverSystem : JobComponentSystem
         {
             inputDep.Complete();
             var newDriverEntity = m_NewDriverGroup.ToEntityArray(Allocator.TempJob);
-            var newDriverList = m_NewDriverGroup.ToComponentDataArray<PingDriverComponentData>(Allocator.TempJob);
+            var newDriverList = m_NewDriverGroup.ToComponentDataArray<PingDriverComponent>(Allocator.TempJob);
             for (int i = 0; i < newDriverList.Length; ++i)
             {
                 if (newDriverList[i].isServer != 0)
                 {
                     if (ServerDriver.IsCreated)
-                        throw new InvalidOperationException("Cannot create multiple server drivers");
-                    var drv = new UdpNetworkDriver(new INetworkParameter[0]);
-                    var addr = NetworkEndPoint.AnyIpv4;
-                    addr.Port = 9000;
-                    if (drv.Bind(addr) != 0)
-                        throw new Exception("Failed to bind to port 9000");
+                    {
+
+                       // throw new InvalidOperationException("Cannot create multiple server drivers");
+                    }
                     else
-                        drv.Listen();
-                    ServerDriver = drv;
-                    ConcurrentServerDriver = ServerDriver.ToConcurrent();
+                    {
+                        var drv = new UdpNetworkDriver(new INetworkParameter[0]);
+                        var addr = NetworkEndPoint.AnyIpv4;
+                        addr.Port = 9000;
+                        if (drv.Bind(addr) != 0)
+                            throw new Exception("Failed to bind to port 9000");
+                        else
+                            drv.Listen();
+                        ServerDriver = drv;
+                        ConcurrentServerDriver = ServerDriver.ToConcurrent();
+                    }
                 }
                 else
                 {
                     if (ClientDriver.IsCreated)
-                        throw new InvalidOperationException("Cannot create multiple client drivers");
-                    ClientDriver = new UdpNetworkDriver(new INetworkParameter[0]);
-                    ConcurrentClientDriver = ClientDriver.ToConcurrent();
+                    {
+                        //  throw new InvalidOperationException("Cannot create multiple client drivers");
+                    }
+                    else
+                    {
+                        ClientDriver = new UdpNetworkDriver(new INetworkParameter[0]);
+                        ConcurrentClientDriver = ClientDriver.ToConcurrent();
+                    }
                 }
 
                 commandBuffer.AddComponent(newDriverEntity[i],

@@ -1,13 +1,16 @@
 using System;
 using Unity.Entities;
 
-[Serializable]
+//[Serializable]
 // A component used to limit when NetworkDrivers are created. The PingDriverSystem uses this to create the
 // NetworkDrivers when requested
-public struct PingDriverComponentData : IComponentData
-{
+//public struct PingDriverComponentData : IComponentData
+//{
+ //   public int isServer;
+//}
+
+
+public struct PingDriverComponent : IComponentData {
+
     public int isServer;
 }
-
-[UnityEngine.DisallowMultipleComponent]
-public class PingDriverComponent : ComponentDataProxy<PingDriverComponentData> { }

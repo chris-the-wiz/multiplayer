@@ -14,7 +14,13 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Samples/Ping-Multiplay/Client/MultiplayPingClient.unity
     guid: 432dc0d0a057eaa4b990e03387a8143a
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Asteroids.unity
     guid: e1d9a388defac7049a631b0047b4278e
+  - enabled: 1
+    path: Assets/Scenes/nonetscene.unity
+    guid: 388b6d2d893217a4b93b61b649ce9587
+  - enabled: 1
+    path: Assets/Scenes/PingECS.unity
+    guid: 7d71b1494761d469cb7426cd4881cce3
   m_configObjects: {}
