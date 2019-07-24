@@ -1,3 +1,7 @@
+# Simple mod so the server and client in ecs ping server work after unloading and re-loading the scene. 
+
+
+
 # Welcome
 
 Welcome to the Unity Real-time Multiplayer Alpha repository!
